@@ -1,0 +1,375 @@
+<!-- base/templates/base/task_list.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+{% comment %} """
+Project: Task Management System
+Developer: Sanket Sonar
+Contact:sonarsanket2001@gmail.com
+""" {% endcomment %}
+<style>
+    /* Styles for the search bar and icons */
+    .search-container {
+        position: relative;
+    }
+
+    .search-icon {
+        position: absolute;
+        color: white;
+        top: 50%;
+        left: 10px;
+        font-size: 20px;
+        transform: translateY(-50%);
+    }
+
+    .search-input {
+        padding-left: 30px;
+        outline: none !important;
+        box-shadow: none !important;
+        height: 3rem;
+        background-color: rgba(255, 255, 255, 0.07);
+        border: 1px inset white;
+    }
+
+    .icon:hover {
+        cursor: pointer;
+        opacity: 0.7;
+    }
+
+    hr {
+        border: 2px solid #212529;
+        opacity: 100;
+    }
+
+    /* Chatbot styles */
+    .chat-container {
+        display: none;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        max-width: 300px;
+        background-color: orange;
+        color:black;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+    }
+
+    .chat-header {
+        background-color: #222222;
+        color: #ffffff;
+        padding: 10px;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .chat-body {
+        padding: 10px;
+        overflow-y: auto;
+        max-height: 200px;
+    }
+
+    .message {
+        margin-bottom: 10px;
+        clear: both;
+        overflow: hidden;
+    }
+
+    .user-message {
+        background-color: #222222;
+        color: #ffffff;
+        border-radius: 10px;
+        padding: 10px;
+        float: right;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+    .bot-message {
+        background-color: #ff9933;
+        color: #222222;
+        border-radius: 10px;
+        padding: 10px;
+        float: left;
+        max-width: 70%;
+        word-wrap: break-word;
+    }
+
+    .input-container {
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        background-color: #222222;
+    }
+
+    #user-input {
+        width: calc(121% - 60px);
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    #send-btn {
+        width: 100px;
+        padding: 10px;
+        background-color: orange;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px auto; /* Center the button horizontally */
+        display: block; /* Ensure the button is displayed as a block element */
+    }
+
+    #chatbot-logo {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 70px;
+        height: 70px;
+        background-color: #222222;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 999;
+    }
+
+    #chatbot-logo img {
+        width: 80%;
+        height: 80%;
+    }
+    .welcome-message {
+        position: fixed;
+        bottom: 80px;
+        right: 20px;
+        background-color: #ff9933;
+        color: #222222;
+        padding: 10px 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+        z-index: 998;
+        display: none; /* Hide by default */
+    }
+    
+</style>
+
+    <!-- Search bar form -->
+    {% if request.user.is_authenticated %}
+                <h1 ;s style="color:orange">
+                    Hi, {% if request.user.first_name %}{{ request.user.first_name }}{% else %}{{ request.user.username }}{% endif %}
+                </h1>
+                {% endif %}
+
+    <form action="" method="GET">
+        <div class="search-container">
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" id="searchBar" class="form-control search-input"  name="search" value="{{search_input}}" aria-label="Search" onkeydown="if (event.keyCode == 13) { this.form.submit(); return false; }">
+        </div>
+    </form>
+
+    <!-- Task lists -->
+    <div class="row mt-5">
+        <!-- To Do tasks -->
+        <div class="col-md-3">
+            <h2 class="text-center mb-3" style="color:orange"><i class="fa fa-list" aria-hidden="true"style="color:orange"></i > To Do</h2>
+            <hr>
+            {% if todo_count == 0 %}
+            <p>No tasks in the "To Do" status.</p>
+            {% else %}
+                {% for x in tasks %}
+                    {% if x.status == "todo" %}
+                        <div class="card mb-3">
+                            <div class="card-body"style="background-color: #080710; color:white;">
+                                <h4 class="card-title">{{ x.title }}</h4>
+                                <p class="card-text">{{ x.description|safe|truncatechars:50 }}</p>
+                                <p class="card-text">{{ x.due|date:"F j, Y, P" }}</p>
+                                <div class="text-end pt-3">
+                                    <i class="fa fa-eye fa-lg text-primary icon" onclick="window.location.href='{% url 'task' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil fa-lg text-secondary icon" onclick="window.location.href='{% url 'task-update' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-trash fa-lg text-danger icon" onclick="window.location.href='{% url 'task-delete' x.id %}'" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- Started tasks -->
+        <div class="col-md-3">
+            <h2 class="text-center mb-3 "style="color:orange"><i class="fa fa-tasks" aria-hidden="true"style="color:orange"></i> Started</h2>
+            <hr>
+            {% if started_count == 0 %}
+            <p>No tasks in the "Started" status.</p>
+            {% else %}
+                {% for x in tasks %}
+                    {% if x.status == "started" %}
+                        <div class="card mb-3">
+                            <div class="card-body"style="background-color: #080710; color:white;">
+                                <h4 class="card-title">{{ x.title }}</h4>
+                                <p class="card-text">{{ x.description|safe|truncatechars:50 }}</p>
+                                <p class="card-text">{{ x.due|date:"F j, Y, P" }}</p>
+                                <div class="text-end pt-3">
+                                    <i class="fa fa-eye fa-lg text-primary icon" onclick="window.location.href='{% url 'task' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil fa-lg text-secondary icon" onclick="window.location.href='{% url 'task-update' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-trash fa-lg text-danger icon" onclick="window.location.href='{% url 'task-delete' x.id %}'" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- Completed tasks -->
+        <div class="col-md-3">
+            <h2 class="text-center mb-3"style="color:orange"><i class="fa fa-check" aria-hidden="true"style="color:orange"></i> Completed</h2>
+            <hr>
+            {% if completed_count == 0 %}
+            <p>No tasks in the "Completed" status.</p>
+            {% else %}
+                {% for x in tasks %}
+                    {% if x.status == "complete" %}
+                        <div class="card mb-3">
+                            <div class="card-body"style="background-color: #080710; color:white;">
+                                <h4 class="card-title">{{ x.title }}</h4>
+                                <p class="card-text">{{ x.description|safe|truncatechars:50 }}</p>
+                                <p class="card-text">{{ x.due|date:"F j, Y, P" }}</p>
+                                <div class="text-end pt-3">
+                                    <i class="fa fa-eye fa-lg text-primary icon" onclick="window.location.href='{% url 'task' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil fa-lg text-secondary icon" onclick="window.location.href='{% url 'task-update' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-trash fa-lg text-danger icon" onclick="window.location.href='{% url 'task-delete' x.id %}'" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+        <!-- Archived tasks -->
+        <div class="col-md-3">
+            <h2 class="text-center mb-3"style="color:orange"><i class="fa fa-archive" aria-hidden="true"style="color:orange"></i> Archived</h2>
+            <hr>
+            {% if archived_count == 0 %}
+            <p>No tasks in the "Archived" status.</p>
+            {% else %}
+                {% for x in tasks %}
+                    {% if x.status == "archived" %}
+                        <div class="card mb-3">
+                            <div class="card-body"style="background-color: #080710; color:white;">
+                                <h4 class="card-title">{{ x.title }}</h4>
+                                <p class="card-text">{{ x.description|safe|truncatechars:50 }}</p>
+                                <p class="card-text">{{ x.due|date:"F j, Y, P" }}</p>
+                                <div class="text-end pt-3">
+                                    <i class="fa fa-eye fa-lg text-primary icon" onclick="window.location.href='{% url 'task' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-pencil fa-lg text-secondary icon" onclick="window.location.href='{% url 'task-update' x.id %}'" aria-hidden="true"></i>
+                                    <i class="fa fa-trash fa-lg text-danger icon" onclick="window.location.href='{% url 'task-delete' x.id %}'" aria-hidden="true"></i>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+
+    <!-- Chatbot container -->
+<div class="chat-container" id="chat-container">
+    <div class="chat-header">TMS Chatbot</div>
+    <div class="chat-body" id="chat-box">
+        <!-- Placeholder for chat messages -->
+        <p>Hello ! I'm your friendly task management bot.</p>
+        <p>How can I assist you today?</p>
+
+    </div>
+    <div class="input-container">
+        <select id="user-input">
+            <option value="" selected disabled>Select a question...</option>
+            <option value="What is your name?">What is your name?</option>
+            <option value="How are you?">How are you?</option>
+            <option value="What can you do?">What can you do?</option>
+            <option value="Who created you?">Who created you?</option>
+            <option value="Who created you?">Who created you?</option>
+            <option value="How do I create a new task in the system?">How do I create a new task in the system?</option>
+            <option value="How can I edit or update a task?">How can I edit or update a task?</option>
+           
+        </select>
+        <button id="send-btn" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<!-- Chatbot logo -->
+<div id="chatbot-logo" onclick="toggleChatbot()">
+    <img src="{% static 'chatbot_logo.png' %}" alt="Chatbot Logo">
+</div>
+
+<div class="welcome-message" id="welcome-message">
+    Welcome to our website! How can I assist you today?
+</div>
+<!-- Script for chatbot functionality -->
+<script>
+    var chatContainer = document.getElementById('chat-container');
+    var isOpen = false;
+
+    function toggleChatbot() {
+        isOpen = !isOpen;
+        chatContainer.style.display = isOpen ? 'block' : 'none';
+    }
+
+    function sendMessage() {
+        var userInput = document.getElementById('user-input').value;
+        if (userInput.trim() === '') return;
+
+        document.getElementById('chat-box').innerHTML += '<div class="message user-message">' + userInput + '</div>';
+        document.getElementById('user-input').value = '';
+
+        var botResponse;
+
+        switch (userInput) {
+            case 'What is your name?':
+                botResponse = 'My name is TMS Chatbot.';
+                break;
+            case 'How are you?':
+                botResponse = 'I am doing well, Thank you!';
+                break;
+            case 'What can you do?':
+                botResponse = 'I can answer your questions.';
+                break;
+            case 'Who created you?':
+                botResponse = 'I was created by an amazing developer Sanket Sonar.Do You Want To Meet Him?sonarsanket2001@gmail.com';
+                break;
+            case 'How do I create a new task in the system?':
+                botResponse = 'To create a new task simply click on new task button.';
+                break;
+            case 'How can I edit or update a task?':
+                botResponse = 'click on pen icon and for delete click on delete icon';
+                break;
+            default:
+                botResponse = 'Sorry, I didn\'t understand your question.';
+                break;
+        }
+
+        document.getElementById('chat-box').innerHTML += '<div class="message bot-message">' + botResponse + '</div>';
+    }
+</script>
+
+<!-- Script to focus the search bar when Ctrl + K is pressed -->
+<script>
+    document.addEventListener('keydown', function(event) {
+        if (event.ctrlKey && event.key === 'k') {
+            event.preventDefault();
+            var searchBar = document.getElementById('searchBar');
+            searchBar.focus();
+            // Set cursor at the end of the input field
+            searchBar.setSelectionRange(searchBar.value.length, searchBar.value.length);
+        }
+    });
+</script>
+
+{% endblock %}

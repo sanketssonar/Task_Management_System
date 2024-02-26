@@ -1,0 +1,27 @@
+<!-- base/templates/base/register.html -->
+
+{% extends "base.html" %}
+
+{% block title %}
+Register <!-- Sets the title to "Register" -->
+{% endblock %}
+
+{% block content %}
+{% comment %} 
+"""
+Project: Task Management System
+Developer: Sanket Sonar
+Contact:sonarsanket2001@gmail.com
+""" 
+{% endcomment %}
+<div class="register_form">
+<h1 class="h2"style="color:orange">New registration</h1>
+<form action="" method="post">
+    {% csrf_token %} <!-- CSRF token for security -->
+    {{ form.as_p }} <!-- Django form as paragraph -->
+    <button style="color:black;background-color:orange;border:none;width:100%;height:50px;border-radius: 90px;font-weight: 800;">Register</button><!-- Submit button for the form -->
+    <p style="color: #333; font-size: 1.2rem; text-align: center; margin-top: 20px;">Already have an account? <a href="{% url 'login' %}"style="color:orange">Login</a></p>
+</form>
+</div>
+
+{% endblock %}

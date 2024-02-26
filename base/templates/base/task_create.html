@@ -1,0 +1,36 @@
+<!-- base/templates/base/task_create.html -->
+
+{% extends "base.html" %}
+
+{% load static %}  <!-- Load static files for the CKEditor -->
+
+<!-- Include CKEditor JavaScript file -->
+<script src="{% static 'ckeditor/ckeditor.js' %}"></script>
+
+{% block title %}
+New task
+{% endblock %}
+
+{% block content %} 
+{% comment %} 
+"""
+Project: Task Management System
+Developer: Sanket Sonar
+Contact:sonarsanket2001@gmail.com
+""" 
+{% endcomment %}
+<h1 class="h2">New task</h1>
+
+<form action="" method="post">
+    {% csrf_token %}  <!-- CSRF token for security -->
+    {{ form.media }}  <!-- Form media -->
+    {{ form.as_p }}  <!-- Form fields -->
+    <button type="submit"style="color:black;background-color:orange;border:none;width:100%;height:50px;border-radius: 90px;font-weight: 800;">Create</button>
+</form>
+
+<!-- Initialize CKEditor -->
+<script>
+    CKEDITOR.replace('id_description');  
+</script>
+<h6 style="text-align: center;">@Sanket Sonar</h6>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "login_base.html" %}
+{% load static %}
+{% block title %}
+Login 
+{% endblock %}
+{% comment %} """
+Project: Task Management System
+Developer: Sanket Sonar
+Contact:sonarsanket2001@gmail.com
+""" {% endcomment %}
+{% block content %}
+<div class="background">
+    <div class="shape"></div>
+    <div class="shape"></div>
+</div>
+<img src="{% static 'TMS3.png' %}" alt="Logo" class="logo"style="width:250px;">
+<form action="" method="post" class="login_form">
+    <h3 style="font-weight:900;color:orange;font-size:30px;">Login</h3>
+    {% csrf_token %}
+    {{ form.as_p}}
+    <button>Log In</button>
+    <p style="color: rgb(229, 229, 229); font-size: 1.2rem; text-align:center; margin-top: 20px;">Don't have an account? <a href="{% url 'register' %}" style="color:rgb(255, 255, 255)">Register</a></p>
+</form>
+{% endblock %}
+
