@@ -18,7 +18,7 @@ Welcome to the Task Management System powered by Django! This README provides co
 
 1. **Clone the Repository**: 
     ```bash
-    git clone https://github.com/your_username/task-management-system.git
+    git clone https://github.com/sanketssonar/Task_Management_System.git
     ```
 
 2. **Navigate to Project Directory**: 
