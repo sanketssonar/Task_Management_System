@@ -28,6 +28,6 @@ This is a task management system built using Django, a high-level Python web fra
 
 ![Intro_Page](https://github.com/sanketssonar/Task_Management_System/assets/110605275/4acdd3dc-5594-439e-8b91-ae577642c89a)
 
-![Login_page](https://github.com/sanketssonar/Task_Management_System/assets/110605275/3087676d-363d-4d0a-b8e1-18a2690c509a)
+
 
 
